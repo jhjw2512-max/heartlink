@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>하트링크 | HeartLink</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#342735;background:#fff6f9}*{box-sizing:border-box}body{margin:0}header{padding:22px 20px;background:linear-gradient(135deg,#ff5b98,#fa7f9d);color:white}header h1{margin:0;font-size:27px}header p{margin:5px 0 0;font-size:13px}main{max-width:520px;margin:auto;padding:20px 16px 105px}.card{background:white;border-radius:22px;padding:24px;box-shadow:0 9px 28px #e69cb42b;margin-bottom:16px}.avatar{height:220px;border-radius:18px;background:linear-gradient(135deg,#ffe3ee,#e4d9ff);display:grid;place-items:center;font-size:82px}.name{font-size:23px;font-weight:750;margin:18px 0 7px}.muted{color:#7c7080;font-size:14px;line-height:1.6}.buttons{display:flex;gap:12px;margin-top:18px}button{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:15px;cursor:pointer}.primary{background:#f94d89;color:white;flex:1}.secondary{background:#fff0f5;color:#e33c79;flex:1}nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:12px 4px 22px;border-top:1px solid #f2dce5}nav button{background:transparent;color:#806e78;padding:7px;font-size:13px}nav button.active{color:#ed3679}section{display:none}section.active{display:block}.message{padding:15px;background:#fff2f7;border-radius:15px;margin-top:12px}.pill{display:inline-block;padding:7px 12px;border-radius:20px;background:#ffe2ee;color:#d52e71;font-size:12px}input,textarea{width:100%;padding:12px;border:1px solid #ecd9e2;border-radius:12px;font:inherit;margin:8px 0}textarea{min-height:95px;resize:vertical}.notice{font-size:12px;color:#847583;text-align:center;margin-top:18px}
+</style>
+</head>
+<body>
+<header><h1>♥ HeartLink</h1><p>설레는 인연이 시작되는 곳</p></header>
+<main>
+<section id="discover" class="active"><div class="card"><span class="pill">오늘의 추천 인연</span><div class="avatar" id="avatar" style="margin-top:15px">🌷</div><div class="name" id="person">하린, 27</div><div class="muted" id="intro">커피와 산책을 좋아해요. 편하게 이야기 나눠요 ☕</div><div class="buttons"><button class="secondary" onclick="nextPerson()">다음 보기 ↻</button><button class="primary" onclick="likePerson()">♥ 좋아요</button></div></div><p class="notice">현재 프로필은 예시입니다. 실제 사용자가 아닙니다.</p></section>
+<section id="matches"><div class="card"><h2>💕 나의 좋아요</h2><p class="muted">시제품에서 누른 좋아요가 여기에 표시됩니다.</p><div id="liked">아직 좋아요가 없어요.</div></div></section>
+<section id="chat"><div class="card"><h2>💬 채팅</h2><p class="muted">실제 채팅 기능은 회원가입과 데이터베이스 연결 후 제공됩니다.</p><div class="message">👋 하트링크에 오신 것을 환영합니다!</div></div></section>
+<section id="profile"><div class="card"><h2>👤 내 프로필</h2><label>닉네임<input id="nickname" placeholder="닉네임 입력"></label><label>자기소개<textarea id="bio" placeholder="나를 소개해 주세요"></textarea></label><button class="primary" style="width:100%" onclick="saveProfile()">프로필 저장</button><p class="muted">이 기기에만 임시 저장됩니다.</p></div></section>
+</main>
+<nav><button class="active" onclick="show('discover',this)">🏠<br>발견</button><button onclick="show('matches',this)">💕<br>좋아요</button><button onclick="show('chat',this)">💬<br>채팅</button><button onclick="show('profile',this)">👤<br>프로필</button></nav>
+<script>
+const people=[['🌷','하린, 27','커피와 산책을 좋아해요. 편하게 이야기 나눠요 ☕'],['🎨','지우, 29','전시회와 음악을 좋아해요 🎵'],['🌻','서윤, 26','맛집 탐방과 여행을 좋아합니다 ✈️']];let current=0;let likes=[];
+function render(){document.getElementById('avatar').textContent=people[current][0];document.getElementById('person').textContent=people[current][1];document.getElementById('intro').textContent=people[current][2]}
+function nextPerson(){current=(current+1)%people.length;render()}
+function likePerson(){const name=people[current][1];if(!likes.includes(name))likes.push(name);document.getElementById('liked').textContent=likes.join(' ♥ ');alert(name+'님에게 좋아요를 눌렀어요! (시연용)');nextPerson()}
+function show(id,btn){document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
+function saveProfile(){localStorage.setItem('heartlink-profile',JSON.stringify({name:document.getElementById('nickname').value,bio:document.getElementById('bio').value}));alert('이 휴대폰에 프로필이 저장됐어요!')}
+try{const p=JSON.parse(localStorage.getItem('heartlink-profile')||'{}');document.getElementById('nickname').value=p.name||'';document.getElementById('bio').value=p.bio||''}catch(e){}
+</script>
+</body></html>
