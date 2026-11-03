@@ -90,6 +90,37 @@ function renderRealPerson() {
   el('person').textContent = person.nickname;
   el('intro').textContent =
     person.bio || '자기소개가 없습니다.';
+}// 로그인 후 실제 회원 불러오기
+async function refreshMembers() {
+  if (!db) return;
+
+  const { data: { user: currentUser }, error } =
+    await db.auth.getUser();
+
+  if (error || !currentUser) return;
+
+  user = currentUser;
+  await loadRealPeople();
+}
+
+// 실제 회원 탐색
+function nextPerson() {
+  if (!realPeople.length) {
+    alert('아직 다른 회원이 없어요.');
+    return;
+  }
+
+  realCurrent = (realCurrent + 1) % realPeople.length;
+  renderRealPerson();
+}
+
+// 로그인 상태 변경 시 회원 목록 갱신
+if (db) {
+  setTimeout(refreshMembers, 1000);
+
+  db.auth.onAuthStateChange(() => {
+    setTimeout(refreshMembers, 1000);
+  });
 }
 </script>
 </body>
