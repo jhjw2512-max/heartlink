@@ -368,5 +368,114 @@ if(db){
   msg('Supabase 연결을 확인하세요.');
 }
 </script>
-</body>
+</body><script>
+(() => {
+  const card = document.querySelector('#matches .card');
+
+  const heading = document.createElement('h3');
+  heading.textContent = '💑 서로 좋아요 · 매칭';
+  heading.style.marginTop = '24px';
+
+  const area = document.createElement('div');
+  area.className = 'muted';
+  area.textContent = '아직 매칭된 회원이 없어요.';
+
+  card.append(heading, area);
+
+  let requestId = 0;
+
+  async function loadMatches() {
+    const uid = user?.id;
+    const request = ++requestId;
+
+    area.textContent = uid
+      ? '매칭 확인 중...'
+      : '로그인이 필요합니다.';
+
+    if (!db || !uid) return [];
+
+    const {data, error} =
+      await db.rpc('get_my_matches');
+
+    if (request !== requestId || user?.id !== uid)
+      return null;
+
+    if (error) {
+      area.textContent =
+        '매칭 조회 오류: ' + error.message;
+      return null;
+    }
+
+    const matches = data || [];
+    area.replaceChildren();
+
+    if (!matches.length) {
+      area.textContent =
+        '아직 서로 좋아요를 누른 회원이 없어요.';
+    }
+
+    matches.forEach(m => {
+      const item = document.createElement('div');
+
+      item.style.cssText =
+        'padding:12px;margin-top:10px;' +
+        'background:#fff0f5;border-radius:12px;' +
+        'white-space:pre-wrap';
+
+      item.textContent =
+        '💕 ' + (m.nickname || '회원') +
+        '\n' + (m.bio || '자기소개가 없습니다.');
+
+      area.appendChild(item);
+    });
+
+    return matches;
+  }
+
+  const oldShow = show;
+
+  show = function(id, btn) {
+    oldShow(id, btn);
+
+    if (id === 'matches') {
+      loadMatches();
+    }
+  };
+
+  const oldLike = likePerson;
+
+  likePerson = async function() {
+    const before = new Set(likedIds);
+
+    await oldLike();
+
+    const newLikes = [...likedIds]
+      .filter(id => !before.has(id));
+
+    if (!newLikes.length) return;
+
+    const matches = await loadMatches();
+
+    const matched = matches?.find(m =>
+      newLikes.includes(m.partner_id)
+    );
+
+    if (matched) {
+      const message =
+        '💕 ' + matched.nickname + '님과 매칭 성공!';
+
+      el('discoverStatus').textContent = message;
+      alert(message);
+    }
+  };
+
+  if (db) {
+    db.auth.onAuthStateChange(() => {
+      requestId++;
+      area.textContent =
+        '좋아요 탭에서 매칭을 확인해 주세요.';
+    });
+  }
+})();
+</script>
 </html>
