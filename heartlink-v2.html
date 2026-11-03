@@ -13,8 +13,8 @@
 <script>
 // Supabase 대시보드의 Project URL 및 Publishable key를 아래에 입력하세요.
 // Secret key, service_role 키, 데이터베이스 비밀번호는 절대 넣지 마세요.
-const SUPABASE_URL='PASTE_PROJECT_URL_HERE';
-const SUPABASE_PUBLISHABLE_KEY='PASTE_PUBLISHABLE_KEY_HERE';
+const SUPABASE_URL='https://ogpajxeeleffnoqnbryc.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_eCrhkDtIZM5TfggaFCmO1g_q3qSDGwk';
 const configured=SUPABASE_URL.startsWith('https://')&&SUPABASE_PUBLISHABLE_KEY.startsWith('sb_publishable_');
 const db=configured&&window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY):null;
 const people=[['🌷','하린, 27','커피와 산책을 좋아해요. 편하게 이야기 나눠요 ☕'],['🎨','지우, 29','전시회와 음악을 좋아해요 🎵'],['🌻','서윤, 26','맛집 탐방과 여행을 좋아합니다 ✈️']];let current=0;let likes=[];let user=null;
