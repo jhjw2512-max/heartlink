@@ -1,28 +1,372 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>하트링크 | HeartLink</title>
 <style>
-:root{font-family:system-ui,-apple-system,sans-serif;color:#342735;background:#fff6f9}*{box-sizing:border-box}body{margin:0}header{padding:22px 20px;background:linear-gradient(135deg,#ff5b98,#fa7f9d);color:white}header h1{margin:0;font-size:27px}header p{margin:5px 0 0;font-size:13px}main{max-width:520px;margin:auto;padding:20px 16px 105px}.card{background:white;border-radius:22px;padding:24px;box-shadow:0 9px 28px #e69cb42b;margin-bottom:16px}.avatar{height:220px;border-radius:18px;background:linear-gradient(135deg,#ffe3ee,#e4d9ff);display:grid;place-items:center;font-size:82px}.name{font-size:23px;font-weight:750;margin:18px 0 7px}.muted{color:#7c7080;font-size:14px;line-height:1.6}.buttons{display:flex;gap:12px;margin-top:18px}button{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:15px;cursor:pointer}.primary{background:#f94d89;color:white;flex:1}.secondary{background:#fff0f5;color:#e33c79;flex:1}nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:12px 4px 22px;border-top:1px solid #f2dce5}nav button{background:transparent;color:#806e78;padding:7px;font-size:13px}nav button.active{color:#ed3679}section{display:none}section.active{display:block}.message{padding:15px;background:#fff2f7;border-radius:15px;margin-top:12px}.pill{display:inline-block;padding:7px 12px;border-radius:20px;background:#ffe2ee;color:#d52e71;font-size:12px}input,textarea{width:100%;padding:12px;border:1px solid #ecd9e2;border-radius:12px;font:inherit;margin:8px 0}textarea{min-height:95px;resize:vertical}.notice{font-size:12px;color:#847583;text-align:center;margin-top:18px}
+:root{font-family:system-ui,sans-serif;color:#342735;background:#fff6f9}
+*{box-sizing:border-box}
+body{margin:0}
+header{padding:22px 20px;background:linear-gradient(135deg,#ff5b98,#fa7f9d);color:white}
+header h1{margin:0;font-size:27px}
+header p{margin:5px 0 0;font-size:13px}
+main{max-width:520px;margin:auto;padding:20px 16px 105px}
+.card{background:white;border-radius:22px;padding:24px;box-shadow:0 9px 28px #e69cb42b;margin-bottom:16px}
+.avatar{height:220px;border-radius:18px;background:linear-gradient(135deg,#ffe3ee,#e4d9ff);display:grid;place-items:center;font-size:82px}
+.name{font-size:23px;font-weight:750;margin:18px 0 7px}
+.muted{color:#7c7080;font-size:14px;line-height:1.6}
+.buttons{display:flex;gap:12px;margin-top:18px}
+button{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:15px;cursor:pointer}
+.primary{background:#f94d89;color:white;flex:1}
+.secondary{background:#fff0f5;color:#e33c79;flex:1}
+nav{position:fixed;bottom:0;left:0;right:0;background:white;display:flex;justify-content:space-around;padding:12px 4px 22px;border-top:1px solid #f2dce5}
+nav button{background:transparent;color:#806e78;padding:7px;font-size:13px}
+nav button.active{color:#ed3679}
+section{display:none}
+section.active{display:block}
+.pill{display:inline-block;padding:7px 12px;border-radius:20px;background:#ffe2ee;color:#d52e71;font-size:12px}
+input,textarea{width:100%;padding:12px;border:1px solid #ecd9e2;border-radius:12px;font:inherit;margin:8px 0}
+textarea{min-height:95px;resize:vertical}
+.notice{font-size:12px;color:#847583;text-align:center;margin-top:18px}
+#status,#discoverStatus{font-size:13px;margin-top:12px;white-space:pre-wrap}
+button:disabled{opacity:.5}
 </style>
 </head>
 <body>
-<header><h1>♥ HeartLink</h1><p>설레는 인연이 시작되는 곳</p></header>
+
+<header>
+<h1>♥ HeartLink</h1>
+<p>설레는 인연이 시작되는 곳</p>
+</header>
+
 <main>
-<section id="discover" class="active"><div class="card"><span class="pill">오늘의 추천 인연</span><div class="avatar" id="avatar" style="margin-top:15px">🌷</div><div class="name" id="person">하린, 27</div><div class="muted" id="intro">커피와 산책을 좋아해요. 편하게 이야기 나눠요 ☕</div><div class="buttons"><button class="secondary" onclick="nextPerson()">다음 보기 ↻</button><button class="primary" onclick="likePerson()">♥ 좋아요</button></div></div><p class="notice">현재 프로필은 예시입니다. 실제 사용자가 아닙니다.</p></section>
-<section id="matches"><div class="card"><h2>💕 나의 좋아요</h2><p class="muted">시제품에서 누른 좋아요가 여기에 표시됩니다.</p><div id="liked">아직 좋아요가 없어요.</div></div></section>
-<section id="chat"><div class="card"><h2>💬 채팅</h2><p class="muted">실제 채팅 기능은 회원가입과 데이터베이스 연결 후 제공됩니다.</p><div class="message">👋 하트링크에 오신 것을 환영합니다!</div></div></section>
-<section id="profile"><div class="card"><h2>👤 내 프로필</h2><label>닉네임<input id="nickname" placeholder="닉네임 입력"></label><label>자기소개<textarea id="bio" placeholder="나를 소개해 주세요"></textarea></label><button class="primary" style="width:100%" onclick="saveProfile()">프로필 저장</button><p class="muted">이 기기에만 임시 저장됩니다.</p></div></section>
+
+<section id="discover" class="active">
+<div class="card">
+<span class="pill">새로운 인연</span>
+<div class="avatar" id="avatar" style="margin-top:15px">💕</div>
+<div class="name" id="person">로그인해 주세요</div>
+<div class="muted" id="intro">로그인하면 회원을 볼 수 있어요.</div>
+<div class="buttons">
+<button class="secondary" onclick="nextPerson()">다음 보기 ↻</button>
+<button class="primary" id="likeButton" onclick="likePerson()">♥ 좋아요</button>
+</div>
+<p id="discoverStatus" role="status"></p>
+</div>
+<p class="notice">회원이 직접 작성한 프로필이 표시됩니다.</p>
+</section>
+
+<section id="matches">
+<div class="card">
+<h2>💕 내가 보낸 좋아요</h2>
+<div id="liked" class="muted">로그인하면 좋아요 목록이 표시됩니다.</div>
+</div>
+</section>
+
+<section id="chat">
+<div class="card">
+<h2>💬 채팅</h2>
+<p class="muted">매칭 기능을 구현한 뒤 채팅을 제공할 예정입니다.</p>
+</div>
+</section>
+
+<section id="profile">
+<div class="card">
+<h2>🔐 회원가입 · 로그인</h2>
+<p id="sessionLabel" class="muted">로그인하지 않았습니다.</p>
+
+<div id="authForm">
+<label>이메일
+<input id="email" type="email" autocomplete="email" placeholder="이메일">
+</label>
+<label>비밀번호
+<input id="password" type="password" autocomplete="current-password" minlength="8" placeholder="8자 이상">
+</label>
+<div class="buttons">
+<button class="primary" onclick="signUp()">회원가입</button>
+<button class="secondary" onclick="signIn()">로그인</button>
+</div>
+</div>
+
+<button id="logout" class="secondary" style="display:none" onclick="signOut()">로그아웃</button>
+<p id="status" role="status"></p>
+</div>
+
+<div class="card" id="profileEditor" style="display:none">
+<h2>👤 내 프로필</h2>
+<label>닉네임
+<input id="nickname" maxlength="40" placeholder="닉네임 입력">
+</label>
+<label>자기소개
+<textarea id="bio" maxlength="500" placeholder="나를 소개해 주세요"></textarea>
+</label>
+<button class="primary" style="width:100%" onclick="saveProfile()">프로필 저장</button>
+</div>
+</section>
+
 </main>
-<nav><button class="active" onclick="show('discover',this)">🏠<br>발견</button><button onclick="show('matches',this)">💕<br>좋아요</button><button onclick="show('chat',this)">💬<br>채팅</button><button onclick="show('profile',this)">👤<br>프로필</button></nav>
+
+<nav>
+<button class="active" onclick="show('discover',this)">🏠<br>발견</button>
+<button onclick="show('matches',this)">💕<br>좋아요</button>
+<button onclick="show('chat',this)">💬<br>채팅</button>
+<button onclick="show('profile',this)">👤<br>프로필</button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+
 <script>
-const people=[['🌷','하린, 27','커피와 산책을 좋아해요. 편하게 이야기 나눠요 ☕'],['🎨','지우, 29','전시회와 음악을 좋아해요 🎵'],['🌻','서윤, 26','맛집 탐방과 여행을 좋아합니다 ✈️']];let current=0;let likes=[];
-function render(){document.getElementById('avatar').textContent=people[current][0];document.getElementById('person').textContent=people[current][1];document.getElementById('intro').textContent=people[current][2]}
-function nextPerson(){current=(current+1)%people.length;render()}
-function likePerson(){const name=people[current][1];if(!likes.includes(name))likes.push(name);document.getElementById('liked').textContent=likes.join(' ♥ ');alert(name+'님에게 좋아요를 눌렀어요! (시연용)');nextPerson()}
-function show(id,btn){document.querySelectorAll('section').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
-function saveProfile(){localStorage.setItem('heartlink-profile',JSON.stringify({name:document.getElementById('nickname').value,bio:document.getElementById('bio').value}));alert('이 휴대폰에 프로필이 저장됐어요!')}
-try{const p=JSON.parse(localStorage.getItem('heartlink-profile')||'{}');document.getElementById('nickname').value=p.name||'';document.getElementById('bio').value=p.bio||''}catch(e){}
+const SUPABASE_URL='https://ogpajxeeleffnoqnbryc.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_eCrhkDtIZM5TfggaFCmO1g_q3qSDGwk';
+
+const db=window.supabase
+  ? window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY)
+  : null;
+
+const el=id=>document.getElementById(id);
+const msg=s=>el('status').textContent=s;
+
+let user=null;
+let people=[];
+let current=0;
+let likedIds=new Set();
+let sessionVersion=0;
+
+function show(id,btn){
+  document.querySelectorAll('main section').forEach(x=>{
+    x.classList.toggle('active',x.id===id);
+  });
+  document.querySelectorAll('nav button').forEach(x=>{
+    x.classList.remove('active');
+  });
+  btn.classList.add('active');
+  if(id==='matches')loadLikes();
+}
+
+function credentials(){
+  const email=el('email').value.trim();
+  const password=el('password').value;
+  if(!email||password.length<8){
+    throw Error('이메일과 8자 이상의 비밀번호를 입력하세요.');
+  }
+  return {email,password};
+}
+
+async function signUp(){
+  if(!db)return msg('Supabase 연결 오류');
+  try{
+    const {data,error}=await db.auth.signUp(credentials());
+    if(error)throw error;
+    msg(data.session
+      ? '회원가입 및 로그인 성공!'
+      : '가입 요청 완료! 이메일 인증을 확인해 주세요.');
+  }catch(e){
+    msg('회원가입 오류: '+e.message);
+  }
+}
+
+async function signIn(){
+  if(!db)return msg('Supabase 연결 오류');
+  try{
+    const {error}=await db.auth.signInWithPassword(credentials());
+    if(error)throw error;
+    msg('로그인 성공!');
+  }catch(e){
+    msg('로그인 오류: '+e.message);
+  }
+}
+
+async function signOut(){
+  if(!db)return;
+  const {error}=await db.auth.signOut();
+  msg(error?'로그아웃 오류: '+error.message:'로그아웃했습니다.');
+}
+
+function render(){
+  const p=people[current];
+  el('avatar').textContent='💕';
+  el('person').textContent=p?.nickname||'표시할 회원이 없어요';
+  el('intro').textContent=p?.bio||
+    (p?'자기소개가 없습니다.':'다른 회원이 가입하면 표시됩니다.');
+  el('likeButton').disabled=!user||!p||likedIds.has(p.id);
+  el('likeButton').textContent=p&&likedIds.has(p.id)
+    ? '♥ 좋아요 완료'
+    : '♥ 좋아요';
+}
+
+function nextPerson(){
+  if(!people.length)return;
+  current=(current+1)%people.length;
+  render();
+}
+
+async function loadPeople(version=sessionVersion){
+  if(!db||!user){
+    people=[];
+    render();
+    return;
+  }
+
+  const {data,error}=await db
+    .from('profiles')
+    .select('id,nickname,bio')
+    .neq('id',user.id)
+    .not('nickname','is',null)
+    .limit(50);
+
+  if(version!==sessionVersion)return;
+
+  if(error){
+    el('discoverStatus').textContent='회원 조회 오류: '+error.message;
+    return;
+  }
+
+  people=(data||[]).filter(p=>p.nickname?.trim());
+  current=0;
+  render();
+}
+
+async function loadLikes(version=sessionVersion){
+  if(!db||!user){
+    likedIds=new Set();
+    el('liked').textContent='로그인이 필요합니다.';
+    render();
+    return;
+  }
+
+  const {data,error}=await db
+    .from('likes')
+    .select('target_id')
+    .eq('sender_id',user.id);
+
+  if(version!==sessionVersion)return;
+
+  if(error){
+    el('liked').textContent='좋아요 조회 오류: '+error.message;
+    return;
+  }
+
+  likedIds=new Set((data||[]).map(x=>x.target_id));
+
+  const names=people
+    .filter(p=>likedIds.has(p.id))
+    .map(p=>p.nickname);
+
+  el('liked').textContent=names.length
+    ? names.join(' ♥ ')
+    : likedIds.size
+      ? '좋아요 '+likedIds.size+'개를 보냈습니다.'
+      : '아직 보낸 좋아요가 없어요.';
+
+  render();
+}
+
+async function likePerson(){
+  if(!user){
+    el('discoverStatus').textContent='먼저 로그인해 주세요.';
+    return;
+  }
+
+  const p=people[current];
+  if(!p||likedIds.has(p.id))return;
+
+  el('likeButton').disabled=true;
+
+  const {error}=await db.from('likes').insert({
+    sender_id:user.id,
+    target_id:p.id
+  });
+
+  if(error){
+    el('discoverStatus').textContent='좋아요 저장 오류: '+error.message;
+    render();
+    return;
+  }
+
+  likedIds.add(p.id);
+  el('discoverStatus').textContent=p.nickname+'님에게 좋아요를 보냈어요!';
+  render();
+  await loadLikes();
+}
+
+async function updateSession(){
+  if(!db){
+    msg('Supabase 라이브러리를 불러오지 못했습니다.');
+    return;
+  }
+
+  const version=++sessionVersion;
+  const {data:{user:u},error}=await db.auth.getUser();
+  if(version!==sessionVersion)return;
+
+  if(error&&error.name!=='AuthSessionMissingError'){
+    msg(error.message);
+  }
+
+  user=u;
+  el('sessionLabel').textContent=u
+    ? '로그인: '+u.email
+    : '로그인하지 않았습니다.';
+
+  el('authForm').style.display=u?'none':'block';
+  el('logout').style.display=u?'block':'none';
+  el('profileEditor').style.display=u?'block':'none';
+
+  if(!u){
+    people=[];
+    likedIds=new Set();
+    el('liked').textContent='로그인이 필요합니다.';
+    render();
+    return;
+  }
+
+  const {data,error:e}=await db
+    .from('profiles')
+    .select('nickname,bio')
+    .eq('id',u.id)
+    .maybeSingle();
+
+  if(version!==sessionVersion)return;
+
+  if(e)msg('프로필 조회 오류: '+e.message);
+
+  el('nickname').value=data?.nickname||'';
+  el('bio').value=data?.bio||'';
+
+  await loadPeople(version);
+  await loadLikes(version);
+}
+
+async function saveProfile(){
+  if(!db||!user)return msg('먼저 로그인하세요.');
+
+  const nickname=el('nickname').value.trim();
+  const bio=el('bio').value.trim();
+
+  if(!nickname)return msg('닉네임을 입력하세요.');
+
+  const {error}=await db.from('profiles').upsert({
+    id:user.id,
+    nickname,
+    bio
+  },{onConflict:'id'});
+
+  msg(error
+    ? '저장 오류: '+error.message
+    : '프로필이 저장됐습니다!');
+
+  if(!error)await loadPeople();
+}
+
+if(db){
+  db.auth.onAuthStateChange(()=>{
+    setTimeout(updateSession,0);
+  });
+  updateSession();
+}else{
+  msg('Supabase 연결을 확인하세요.');
+}
 </script>
-</body></html>
+</body>
+</html>
