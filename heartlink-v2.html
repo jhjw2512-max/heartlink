@@ -30,4 +30,48 @@ async function signOut(){if(!db)return;const {error}=await db.auth.signOut();msg
 async function updateSession(){if(!db)return msg('Supabase 연결 정보를 설정하면 회원가입을 사용할 수 있습니다.');const {data:{user:u},error}=await db.auth.getUser();if(error&&error.name!=='AuthSessionMissingError')msg(error.message);user=u;el('sessionLabel').textContent=u?'로그인: '+u.email:'로그인하지 않았습니다.';el('authForm').style.display=u?'none':'block';el('logout').style.display=u?'block':'none';el('profileEditor').style.display=u?'block':'none';if(u){const {data,error:e}=await db.from('profiles').select('nickname,bio').eq('id',u.id).maybeSingle();if(e)msg('프로필 조회 오류: '+e.message);el('nickname').value=data?.nickname||'';el('bio').value=data?.bio||''}}
 async function saveProfile(){if(!db||!user)return msg('먼저 로그인하세요.');const nickname=el('nickname').value.trim(),bio=el('bio').value.trim();if(!nickname)return msg('닉네임을 입력하세요.');const {error}=await db.from('profiles').upsert({id:user.id,nickname,bio},{onConflict:'id'});msg(error?'저장 오류: '+error.message:'프로필이 저장됐습니다!')}
 if(db){db.auth.onAuthStateChange(()=>{setTimeout(updateSession,0)});updateSession()}else msg('Supabase 연결 정보를 설정하면 회원가입을 사용할 수 있습니다.');
-</script></body></html>
+</sc// 실제 가입 회원 목록
+let realPeople = [];
+let realCurrent = 0;
+
+// Supabase에서 회원 프로필 불러오기
+async function loadRealPeople() {
+  if (!db || !user) return;
+
+  const { data, error } = await db
+    .from('profiles')
+    .select('id,nickname,bio')
+    .neq('id', user.id)
+    .not('nickname', 'is', null)
+    .limit(50);
+
+  if (error) {
+    console.error('회원 조회 오류:', error.message);
+    return;
+  }
+
+  realPeople = data || [];
+
+  if (realPeople.length === 0) {
+    el('person').textContent = '아직 다른 회원이 없어요';
+    el('intro').textContent =
+      '새로운 회원이 가입하면 여기에 표시됩니다.';
+    el('avatar').textContent = '💕';
+    return;
+  }
+
+  realCurrent = 0;
+  renderRealPerson();
+}
+
+// 실제 회원 표시
+function renderRealPerson() {
+  if (!realPeople.length) return;
+
+  const person = realPeople[realCurrent];
+
+  el('avatar').textContent = '💕';
+  el('person').textContent = person.nickname;
+  el('intro').textContent =
+    person.bio || '자기소개가 없습니다.';
+}/script></body></html>
